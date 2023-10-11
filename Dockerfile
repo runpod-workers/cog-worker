@@ -4,6 +4,7 @@ ARG COG_VERSION
 
 FROM r8.im/${COG_REPO}/${COG_MODEL}@sha256:${COG_VERSION}
 
+# Install necessary packages and Python 3.10
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y --no-install-recommends software-properties-common curl git openssh-server && \
     add-apt-repository ppa:deadsnakes/ppa -y && \
@@ -12,7 +13,12 @@ RUN apt-get update && apt-get upgrade -y && \
     curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
     python3 get-pip.py
 
-RUN python3 -m pip install runpod
+# Create a virtual environment
+RUN python3 -m venv /opt/venv
+
+# Install runpod within the virtual environment
+RUN /opt/venv/bin/pip install runpod
+
 ADD src/handler.py /rp_handler.py
 
-CMD python3 -u /rp_handler.py
+CMD ["/opt/venv/bin/python3", "-u", "/rp_handler.py"]
