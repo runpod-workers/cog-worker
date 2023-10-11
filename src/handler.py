@@ -26,8 +26,13 @@ def wait_for_service(url):
     '''
     while True:
         try:
-            requests.get(url, timeout=120)
-            return
+            health = requests.get(url, timeout=120)
+            status = health.json()["status"]
+
+            if status == "READY":
+                time.sleep(1)
+                return
+
         except requests.exceptions.RequestException:
             print("Service not ready yet. Retrying...")
         except Exception as err:
