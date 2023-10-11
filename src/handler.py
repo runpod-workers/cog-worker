@@ -60,8 +60,7 @@ def handler(event):
 
     json = run_inference({"input": event["input"]})
 
-    # return the output that you want to be returned like pre-signed URLs to output artifacts
-    return json
+    return json["output"]
 
 
 if __name__ == "__main__":
