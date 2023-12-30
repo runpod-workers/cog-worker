@@ -1,5 +1,6 @@
 import time
 import subprocess
+import os
 
 import runpod
 import requests
@@ -46,7 +47,8 @@ def run_inference(inference_request):
     Run inference on a request.
     '''
     response = cog_session.post(url=f'{LOCAL_URL}/predictions',
-                                json=inference_request, timeout=600)
+                                json=inference_request, 
+                                timeout=int(os.environ.get("REQUEST_TIMEOUT",600)))
     return response.json()
 
 
