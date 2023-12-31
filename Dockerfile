@@ -4,7 +4,8 @@ ARG COG_VERSION
 
 FROM r8.im/${COG_REPO}/${COG_MODEL}@sha256:${COG_VERSION}
 
-ENV REQUEST_TIMEOUT=600
+ARG REQUEST_TIMEOUT=600
+ENV REQUEST_TIMEOUT=${REQUEST_TIMEOUT}
 
 # Install necessary packages and Python 3.10
 RUN apt-get update && apt-get upgrade -y && \
