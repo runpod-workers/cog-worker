@@ -56,6 +56,7 @@ def run_inference(inference_request):
     if response.status_code != 200:
         print(response.status_code)
         print(response.text)
+    print(response.text)
     return response.json()
 
 
@@ -76,7 +77,6 @@ if __name__ == "__main__":
     wait_for_service(url=f"{LOCAL_URL}/health-check")
 
     print("Cog API Service is ready. Starting RunPod serverless handler...")
-    if TIMEOUT != 600:
-        print(f"Using non-default timeout of {TIMEOUT}s")
+    print(f"Using request timeout of {TIMEOUT}s")
 
     runpod.serverless.start({"handler": handler})
