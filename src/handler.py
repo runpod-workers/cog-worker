@@ -6,7 +6,7 @@ import runpod
 import requests
 from requests.adapters import HTTPAdapter, Retry
 
-TIMEOUT = int(os.environ.get("REQUEST_TIMEOUT", "600"))
+TIMEOUT = int(os.environ.get("_RUNPOD_REQUEST_TIMEOUT", "600"))
 
 LOCAL_URL = "http://127.0.0.1:5000"
 
@@ -51,7 +51,7 @@ def run_inference(inference_request):
     response = cog_session.post(
         url=f"{LOCAL_URL}/predictions",
         json=inference_request,
-        timeout=int(os.environ.get("REQUEST_TIMEOUT", 600)),
+        timeout=TIMEOUT,
     )
     if response.status_code != 200:
         print(response.status_code)
