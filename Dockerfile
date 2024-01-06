@@ -4,6 +4,8 @@ ARG COG_VERSION
 
 FROM r8.im/${COG_REPO}/${COG_MODEL}@sha256:${COG_VERSION}
 
+ENV REQUEST_TIMEOUT=600
+
 # Install necessary packages and Python 3.10
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y --no-install-recommends software-properties-common curl git openssh-server && \
