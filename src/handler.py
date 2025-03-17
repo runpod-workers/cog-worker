@@ -1,9 +1,12 @@
 import time
 import subprocess
+import os
 
 import runpod
 import requests
 from requests.adapters import HTTPAdapter, Retry
+
+TIMEOUT = int(os.environ.get("RUNPOD_REQUEST_TIMEOUT", "600"))
 
 LOCAL_URL = "http://127.0.0.1:5000"
 
@@ -46,13 +49,14 @@ def run_inference(inference_request):
     Run inference on a request.
     '''
     response = cog_session.post(url=f'{LOCAL_URL}/predictions',
-                                json=inference_request, timeout=600)
+                                json=inference_request, timeout=TIMEOUT)
+
+    if response.status_code != 200:
+        print("Request failed - reason :", response.status_code, response.text)
+
     return response.json()
 
 
-# ---------------------------------------------------------------------------- #
-#                                RunPod Handler                                #
-# ---------------------------------------------------------------------------- #
 def handler(event):
     '''
     This is the handler function that will be called by the serverless.
