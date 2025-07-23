@@ -1,6 +1,7 @@
 import time
 import subprocess
 import os
+import sys
 
 import runpod
 import requests
@@ -17,7 +18,17 @@ cog_session.mount('http://', HTTPAdapter(max_retries=retries))
 
 # ----------------------------- Start API Service ---------------------------- #
 # Call "python -m cog.server.http" in a subprocess to start the API service.
-subprocess.Popen(["python", "-m", "cog.server.http"])
+try:
+    subprocess.Popen([sys.executable, "-m", "cog.server.http"])
+    print("Started Cog server")
+except Exception as e:
+    print(f"Error starting Cog server: {e}")
+    # Try alternative method if the first one fails
+    try:
+        subprocess.Popen(["cog", "server"])
+        print("Started Cog server using alternative method")
+    except Exception as e2:
+        print(f"Error starting Cog server with alternative method: {e2}")
 
 
 # ---------------------------------------------------------------------------- #
@@ -27,6 +38,7 @@ def wait_for_service(url):
     '''
     Check if the service is ready to receive requests.
     '''
+    print(f"Waiting for service at {url}...")
     while True:
         try:
             health = requests.get(url, timeout=120)
@@ -61,6 +73,9 @@ def handler(event):
     '''
     This is the handler function that will be called by the serverless.
     '''
+    # Check if input is provided
+    if not event or "input" not in event:
+        return {"error": "No input provided"}
 
     json = run_inference({"input": event["input"]})
 
