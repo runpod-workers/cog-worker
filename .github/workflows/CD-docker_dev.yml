@@ -7,6 +7,11 @@ on:
 
 jobs:
   docker:
+    # The Dockerfile builds FROM a Replicate (cog) model, so it needs all three
+    # COG_* build args. This repo is a template with no model of its own: set
+    # COG_REPO, COG_MODEL and COG_VERSION as repository variables in a fork to
+    # build, otherwise the job is skipped instead of failing.
+    if: vars.COG_REPO != '' && vars.COG_MODEL != '' && vars.COG_VERSION != ''
     runs-on: ubuntu-latest
     steps:
       - name: Clear Space
@@ -42,3 +47,7 @@ jobs:
         with:
           push: true
           tags: ${{ vars.DOCKERHUB_REPO }}/${{ vars.DOCKERHUB_IMG }}:${{ env.DOCKER_TAG }}
+          build-args: |
+            COG_REPO=${{ vars.COG_REPO }}
+            COG_MODEL=${{ vars.COG_MODEL }}
+            COG_VERSION=${{ vars.COG_VERSION }}
